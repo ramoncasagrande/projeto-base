@@ -4,4 +4,6 @@ const create = (body) => User.create(body);
 
 const findAllUsers = () => User.find();
 
-module.exports = { create, findAllUsers };
+const findUserById = (userId) => User.findById(userId);
+
+module.exports = { create, findAllUsers, findUserById };

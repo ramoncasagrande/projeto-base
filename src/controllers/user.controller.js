@@ -1,4 +1,5 @@
-const userService = require('../services/user.service')
+const userService = require('../services/user.service');
+const mongoose = require('mongoose');
 
 const create = async (req, res) => {
     const { name, email, password} = req.body;
@@ -35,4 +36,21 @@ const findAll = async (req, res) => {
     res.send(users);
 }
 
-module.exports = { create, findAll };
+const findById = async (req, res) => {
+    const userId = req.params.userId;
+
+    if (!mongoose.Types.ObjectId.isValid(userId)){
+        return res.status(400).send({message:"Invalid ID"})
+    }
+
+    const user = await userService.findUserById(userId);
+
+    if(!user){
+        return res.status(400).send({message:"User not found"})
+    }
+
+    res.send(user);
+
+}
+
+module.exports = { create, findAll, findById };

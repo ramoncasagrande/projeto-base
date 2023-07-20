@@ -20,9 +20,19 @@ const create = async (req, res) => {
             id: user._id,
             name,
             email,
-            created: new Date()
+            created: user.created
         }
     });
 }
 
-module.exports = { create };
+const findAll = async (req, res) => {
+    const users = await userService.findAllUsers();
+
+    if (users.length === 0){
+        return res.status(400).send({message: "There are no users"})
+    }
+
+    res.send(users);
+}
+
+module.exports = { create, findAll };

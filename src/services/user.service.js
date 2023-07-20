@@ -2,4 +2,6 @@ const User = require('../models/User');
 
 const create = (body) => User.create(body);
 
-module.exports = { create };
+const findAllUsers = () => User.find();
+
+module.exports = { create, findAllUsers };

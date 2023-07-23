@@ -2,16 +2,16 @@ const userService = require('../services/user.service');
 const mongoose = require('mongoose');
 
 const create = async (req, res) => {
-    const { name, email, password} = req.body;
+    const { name, email, password } = req.body;
 
     if (!name || !email || !password) {
-            res.status(400).send({message: "Field error"});
+        res.status(400).send({ message: "Field error" });
     }
 
     const user = await userService.create(req.body);
 
-    if (!user){
-        return res.status(400).send({message: "Error: User not created"})
+    if (!user) {
+        return res.status(400).send({ message: "Error: User not created" })
     }
 
 
@@ -29,8 +29,8 @@ const create = async (req, res) => {
 const findAll = async (req, res) => {
     const users = await userService.findAllUsers();
 
-    if (users.length === 0){
-        return res.status(400).send({message: "There are no users"})
+    if (users.length === 0) {
+        return res.status(400).send({ message: "There are no users" })
     }
 
     res.send(users);
@@ -39,18 +39,41 @@ const findAll = async (req, res) => {
 const findById = async (req, res) => {
     const userId = req.params.userId;
 
-    if (!mongoose.Types.ObjectId.isValid(userId)){
-        return res.status(400).send({message:"Invalid ID"})
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+        return res.status(400).send({ message: "Invalid ID" })
     }
 
     const user = await userService.findUserById(userId);
 
-    if(!user){
-        return res.status(400).send({message:"User not found"})
+    if (!user) {
+        return res.status(400).send({ message: "User not found" })
     }
 
     res.send(user);
 
 }
 
-module.exports = { create, findAll, findById };
+const update = async (req, res) => {
+    const { name, email, password } = req.body;
+    const userId = req.params.userId;
+
+    if (!name && !email && !password) {
+        res.status(400).send({ message: "Field error" });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+        return res.status(400).send({ message: "Invalid ID" });
+    }
+
+    const user = await userService.findUserById(userId);
+
+    if (!user) {
+        return res.status(400).send({ message: "User not found" });
+    }
+
+    await userService.updateUser(userId, name, email, password);
+
+    res.send({ message: "User updated succesfully" });
+}
+
+module.exports = { create, findAll, findById, update };

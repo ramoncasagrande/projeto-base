@@ -47,12 +47,20 @@ const update = async (req, res) => {
     const user = req.user;
 
     if (!name && !email && !password) {
-        res.status(400).send({ message: "Field error" });
+        res.status(400).send({ message: "Nothing to update" });
     }
 
     await userService.updateUser(userId, name, email, password);
 
-    res.send({ message: "User updated succesfully" });
+    res.send({ message: "User updated successfully" });
 }
 
-module.exports = { create, findAll, findById, update };
+const deleteById = async (req, res) => {
+    const userId = req.userId;
+
+    await userService.deleteUser(userId);
+
+    res.send({message: "User deleted successfully"})
+}
+
+module.exports = { create, findAll, findById, update, deleteById };

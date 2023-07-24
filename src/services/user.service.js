@@ -8,4 +8,6 @@ const findUserById = (userId) => User.findById(userId);
 
 const updateUser = (userId, name, email, password) => User.findOneAndUpdate({ _id: userId }, { name, email, password });
 
-module.exports = { create, findAllUsers, findUserById, updateUser };
+const deleteUser = (userId) => User.findOneAndDelete(userId);
+
+module.exports = { create, findAllUsers, findUserById, updateUser, deleteUser };

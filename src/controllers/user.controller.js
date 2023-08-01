@@ -1,66 +1,86 @@
 const userService = require('../services/user.service');
 
 const create = async (req, res) => {
-    const { name, email, password } = req.body;
+    try {
+        const { name, email, password } = req.body;
 
-    if (!name || !email || !password) {
-        res.status(400).send({ message: "Field error" });
-    }
-
-    const user = await userService.create(req.body);
-
-    if (!user) {
-        return res.status(400).send({ message: "Error: User not created" })
-    }
-
-
-    res.status(201).send({
-        message: "User created successfully",
-        user: {
-            id: user._id,
-            name,
-            email,
-            created: user.created
+        if (!name || !email || !password) {
+            res.status(400).send({ message: "Field error" });
         }
-    });
+
+        const user = await userService.create(req.body);
+
+        if (!user) {
+            return res.status(400).send({ message: "Error: User not created" })
+        }
+
+
+        res.status(201).send({
+            message: "User created successfully",
+            user: {
+                id: user._id,
+                name,
+                email,
+                created: user.created
+            }
+        });
+    } catch (err) {
+        res.status(500).send({ message: err.message });
+    }
 }
 
 const findAll = async (req, res) => {
-    const users = await userService.findAllUsers();
+    try {
+        const users = await userService.findAllUsers();
 
-    if (users.length === 0) {
-        return res.status(400).send({ message: "There are no users" })
+        if (users.length === 0) {
+            return res.status(400).send({ message: "There are no users" })
+        }
+
+        res.send(users);
+    } catch (err) {
+        res.status(500).send({ message: err.message });
     }
-
-    res.send(users);
 }
 
 const findById = async (req, res) => {
-    const user = req.user;
+    try {
+        const user = req.user;
 
-    res.send(user);
+        res.send(user);
+    } catch (err) {
+        res.status(500).send({ message: err.message });
+    }
 }
 
 const update = async (req, res) => {
-    const { name, email, password } = req.body;
-    const userId = req.userId;
-    const user = req.user;
+    try {
+        const { name, email, password } = req.body;
+        const userId = req.userId;
+        const user = req.user;
 
-    if (!name && !email && !password) {
-        res.status(400).send({ message: "Nothing to update" });
+        if (!name && !email && !password) {
+            res.status(400).send({ message: "Nothing to update" });
+        }
+
+        await userService.updateUser(userId, name, email, password);
+
+        res.send({ message: "User updated successfully" });
+    } catch (err) {
+        res.status(500).send({ message: err.message });
     }
-
-    await userService.updateUser(userId, name, email, password);
-
-    res.send({ message: "User updated successfully" });
 }
 
 const deleteById = async (req, res) => {
-    const userId = req.userId;
+    try {
+        const userId = req.userId;
 
-    await userService.deleteUser(userId);
+        await userService.deleteUser(userId);
 
-    res.send({message: "User deleted successfully"})
+        res.send({ message: "User deleted successfully" })
+    } catch (err) {
+        res.status(500).send({ message: err.message });
+    }
 }
 
 module.exports = { create, findAll, findById, update, deleteById };

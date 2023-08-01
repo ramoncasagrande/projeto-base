@@ -1,4 +1,4 @@
-const User = require('../models/User');
+import User from '../models/User.js';
 
 const create = (body) => User.create(body);
 
@@ -10,4 +10,4 @@ const updateUser = (userId, name, email, password) => User.findOneAndUpdate({ _i
 
 const deleteUser = (userId) => User.deleteOne({ _id: userId});
 
-module.exports = { create, findAllUsers, findUserById, updateUser, deleteUser };
+export default { create, findAllUsers, findUserById, updateUser, deleteUser };
